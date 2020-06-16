@@ -2,6 +2,8 @@ from flask import Flask, render_template, request
 
 import numpy as np
 
+from model import predict
+
 app = Flask(__name__)
 
 @app.route('/')
@@ -45,3 +47,13 @@ def handle_counting_form_submission():
         'counting-results.html',
         numbers=numbers
     )
+
+@app.route('/predict-spam-ham')
+def predict_spam_ham():
+    return render_template('prediction-form.html')
+
+@app.route('/predict-spam-ham', methods=['POST'])
+def handle_prediction_form_submission():
+    message = request.form["message"]
+    spam_or_ham = predict(message)
+    return f'This message is {spam_or_ham}'
